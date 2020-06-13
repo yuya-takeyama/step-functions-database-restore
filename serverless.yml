@@ -72,6 +72,7 @@ functions:
     role: waitAvailableRole
   modify:
     handler: bin/modify
+    role: modifyRole
   #updateAppUserPassword:
   #  handler: bin/update-app-user-password
   #updateCname:
@@ -188,3 +189,29 @@ resources:
                     - rds:DescribeDBInstances
                     - rds:DescribeDBClusters
                   Resource: "*"
+    modifyRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        RoleName: DatabaseRestoreModifyRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: DatabaseRestoreModifyPolicy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - rds:ModifyDBCluster
+                  Resource: "*"
+                - Effect: Deny
+                  Action:
+                    - rds:ModifyDBCluster
+                  Resource: "arn:aws:rds:::cluster:*-production"
