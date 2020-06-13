@@ -1,8 +1,8 @@
 locals {
   task_parameters = {
-    SourceClusterIdentifier       = var.source_cluster_identifier,
-    DestinationClusterIdentifier  = var.destination_cluster_identifier,
-    DestinationInstanceIdentifier = var.destination_instance_identifier,
+    SourceClusterIdentifier       = "${var.db_identifier_prefix}-production-a",
+    DestinationClusterIdentifier  = "${var.db_identifier_prefix}-${var.db_environment}-a",
+    DestinationInstanceIdentifier = "${var.db_identifier_prefix}-${var.db_environment}-a01",
     Engine                        = var.engine,
     EngineVersion                 = var.engine_version,
     DBInstanceClass               = var.db_instance_class,
@@ -24,7 +24,7 @@ locals {
 }
 
 resource "aws_sfn_state_machine" "restore" {
-  name     = var.state_machine_name
+  name     = "restore-${var.db_identifier_prefix}-${var.db_environment}"
   role_arn = "arn:aws:iam::711930837542:role/service-role/StepFunctions-DatabaseRestore-role-ed2ad9da"
 
   definition = jsonencode({

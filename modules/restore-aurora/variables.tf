@@ -1,16 +1,8 @@
-variable "state_machine_name" {
+variable "db_identifier_prefix" {
   type = string
 }
 
-variable "source_cluster_identifier" {
-  type = string
-}
-
-variable "destination_cluster_identifier" {
-  type = string
-}
-
-variable "destination_instance_identifier" {
+variable "db_environment" {
   type = string
 }
 

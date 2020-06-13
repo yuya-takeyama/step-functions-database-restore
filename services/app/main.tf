@@ -1,11 +1,9 @@
 module "restore-develop" {
   source = "../../modules/restore-aurora"
 
-  state_machine_name = "restore-develop"
+  db_identifier_prefix = "database"
+  db_environment       = "develop"
 
-  source_cluster_identifier       = "database-production"
-  destination_cluster_identifier  = "database-develop"
-  destination_instance_identifier = "database-develop-a01"
 
   engine            = "aurora-postgresql"
   engine_version    = "11.6"
@@ -21,11 +19,8 @@ module "restore-develop" {
 module "restore-edge" {
   source = "../../modules/restore-aurora"
 
-  state_machine_name = "restore-edge"
-
-  source_cluster_identifier       = "database-production"
-  destination_cluster_identifier  = "database-edge"
-  destination_instance_identifier = "database-edge-a01"
+  db_identifier_prefix = "database"
+  db_environment       = "edge"
 
   engine            = "aurora-postgresql"
   engine_version    = "11.6"
