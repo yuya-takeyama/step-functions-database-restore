@@ -24,7 +24,7 @@ locals {
 }
 
 resource "aws_sfn_state_machine" "restore" {
-  name     = "restore-${var.db_identifier_prefix}-${var.db_environment}"
+  name     = "restore-aurora-${var.db_identifier_prefix}-${var.db_environment}"
   role_arn = "arn:aws:iam::711930837542:role/service-role/StepFunctions-DatabaseRestore-role-ed2ad9da"
 
   definition = jsonencode({
