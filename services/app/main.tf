@@ -9,7 +9,7 @@ module "restore-develop" {
 
   engine            = "aurora-postgresql"
   engine_version    = "11.6"
-  db_instance_class = "t3.medium"
+  db_instance_class = "db.t3.medium"
 
   db_subnet_group_name   = "default"
   vpc_security_group_ids = ["sg-8d878fef"]
@@ -29,7 +29,7 @@ module "restore-edge" {
 
   engine            = "aurora-postgresql"
   engine_version    = "11.6"
-  db_instance_class = "t3.medium"
+  db_instance_class = "db.t3.medium"
 
   db_subnet_group_name   = "default"
   vpc_security_group_ids = ["sg-8d878fef"]

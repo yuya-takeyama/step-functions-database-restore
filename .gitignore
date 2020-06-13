@@ -22,3 +22,4 @@ vendor
 
 .terraform
 *.tfstate
+*.tfstate.backup
