@@ -106,11 +106,11 @@ resources:
                 - Effect: Deny
                   Action:
                     - rds:DeleteDBCluster
-                  Resource: "arn:aws:rds:::cluster:*-production"
+                  Resource: "arn:aws:rds:::cluster:*-production-*"
                 - Effect: Deny
                   Action:
                     - rds:DeleteDBIInstance
-                  Resource: "arn:aws:rds:::db:*-production*"
+                  Resource: "arn:aws:rds:::db:*-production-*"
     waitDeletedRole:
       Type: AWS::IAM::Role
       Properties:
@@ -161,11 +161,11 @@ resources:
                 - Effect: Deny
                   Action:
                     - rds:RestoreDBClusterFromSnapshot
-                  Resource: "arn:aws:rds:::cluster:*-production"
+                  Resource: "arn:aws:rds:::cluster:*-production-*"
                 - Effect: Deny
                   Action:
                     - rds:CreateDBInstance
-                  Resource: "arn:aws:rds:::db:*-production*"
+                  Resource: "arn:aws:rds:::db:*-production-*"
     waitAvailableRole:
       Type: AWS::IAM::Role
       Properties:
@@ -214,4 +214,4 @@ resources:
                 - Effect: Deny
                   Action:
                     - rds:ModifyDBCluster
-                  Resource: "arn:aws:rds:::cluster:*-production"
+                  Resource: "arn:aws:rds:::cluster:*-production-*"
