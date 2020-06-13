@@ -14,6 +14,8 @@ module "restore-develop" {
   availability_zones     = ["ap-northeast-1a"]
 
   master_user_password = "postgresql"
+
+  trigger_schedule = "cron(0 * * * ? *)"
 }
 
 module "restore-edge" {
@@ -31,4 +33,6 @@ module "restore-edge" {
   availability_zones     = ["ap-northeast-1a"]
 
   master_user_password = "postgresql"
+
+  trigger_schedule = "cron(0 * * * ? *)"
 }
