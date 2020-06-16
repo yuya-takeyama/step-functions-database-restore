@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println("DEBUG start")
-	err := pkg.Restore(&pkg.ResoteInput{
+	err := pkg.Restore(&pkg.RestoreInput{
 		SourceClusterIdentifier:       "database-production",
 		DestinationClusterIdentifier:  "database-edge2",
 		DestinationInstanceIdentifier: "database-edge2-a01",

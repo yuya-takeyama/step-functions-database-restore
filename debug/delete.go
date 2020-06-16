@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println("DEBUG start")
-	err := pkg.Delete(&pkg.ResoteInput{
+	err := pkg.Delete(&pkg.RestoreInput{
 		OldDBClusterIdentifier:  "hoge-cluster",
 		OldDBInstanceIdentifier: "hoge-cluster-a01",
 	})

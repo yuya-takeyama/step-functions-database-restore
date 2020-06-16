@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println("DEBUG start")
-	err := pkg.WaitDeleted(&pkg.ResoteInput{
+	err := pkg.WaitDeleted(&pkg.RestoreInput{
 		DestinationClusterIdentifier:  "database-develop",
 		DestinationInstanceIdentifier: "database-develop-a01",
 	})

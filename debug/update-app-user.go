@@ -9,13 +9,16 @@ import (
 
 func main() {
 	fmt.Println("DEBUG start")
-	err := pkg.WaitAvailable(&pkg.RestoreInput{
-		SourceClusterIdentifier:       "database-production",
-		DestinationClusterIdentifier:  "database-develop",
+	err := pkg.UpdateAppUser(&pkg.RestoreInput{
+		SourceClusterIdentifier:       "database-production-a",
+		DestinationClusterIdentifier:  "database-production-a",
 		DestinationInstanceIdentifier: "database-develop-a01",
 		Engine:                        "aurora-postgresql",
 		EngineVersion:                 "11.6",
 		DBInstanceClass:               "db.t3.medium",
+		MasterUserPassword:            "postgres",
+		AppUserUsername:               "yuya",
+		AppUserPassword:               "yuya",
 	})
 
 	pp.Println(err)

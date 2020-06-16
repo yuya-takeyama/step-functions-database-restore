@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println("DEBUG start")
-	err := pkg.Modify(&pkg.ResoteInput{
+	err := pkg.Modify(&pkg.RestoreInput{
 		SourceClusterIdentifier:       "database-production",
 		DestinationClusterIdentifier:  "database-develop",
 		DestinationInstanceIdentifier: "database-develop-a01",

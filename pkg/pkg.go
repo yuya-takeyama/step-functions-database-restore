@@ -8,10 +8,14 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rds"
+
+	"database/sql"
+
+	_ "github.com/lib/pq"
 )
 
-// ResoteInput is the input of DeleteOldClusterAndInstance
-type ResoteInput struct {
+// RestoreInput is the input of DeleteOldClusterAndInstance
+type RestoreInput struct {
 	SourceClusterIdentifier       string
 	DestinationClusterIdentifier  string
 	DestinationInstanceIdentifier string
@@ -22,11 +26,13 @@ type ResoteInput struct {
 	DBSubnetGroupName             string
 	VpcSecurityGroupIds           []string
 	MasterUserPassword            string
+	AppUserUsername               string
+	AppUserPassword               string
 }
 
 // Delete deletes the old cluster and the instance
 // if they exist
-func Delete(input *ResoteInput) error {
+func Delete(input *RestoreInput) error {
 	svc := rds.New(session.New())
 
 	deleteInstanceInput := &rds.DeleteDBInstanceInput{
@@ -65,7 +71,7 @@ func Delete(input *ResoteInput) error {
 }
 
 // WaitDeleted returns error unless the old cluster and instance are deleted
-func WaitDeleted(input *ResoteInput) error {
+func WaitDeleted(input *RestoreInput) error {
 	var instanceDeleted bool
 	var clusterDeleted bool
 
@@ -114,7 +120,7 @@ func WaitDeleted(input *ResoteInput) error {
 }
 
 // Restore restores from a snapshot
-func Restore(input *ResoteInput) error {
+func Restore(input *RestoreInput) error {
 	svc := rds.New(session.New())
 
 	describeSnapshotsInput := &rds.DescribeDBClusterSnapshotsInput{
@@ -169,7 +175,7 @@ func Restore(input *ResoteInput) error {
 }
 
 // WaitAvailable returns error unless the destination cluster and instance are available
-func WaitAvailable(input *ResoteInput) error {
+func WaitAvailable(input *RestoreInput) error {
 	svc := rds.New(session.New())
 
 	describeInstancesInput := &rds.DescribeDBInstancesInput{
@@ -208,7 +214,7 @@ func WaitAvailable(input *ResoteInput) error {
 }
 
 // Modify modifies DB Cluster
-func Modify(input *ResoteInput) error {
+func Modify(input *RestoreInput) error {
 	svc := rds.New(session.New())
 
 	modifyInput := &rds.ModifyDBClusterInput{
@@ -222,4 +228,45 @@ func Modify(input *ResoteInput) error {
 	}
 
 	return nil
+}
+
+// UpdateAppUser updates the password of app user
+func UpdateAppUser(input *RestoreInput) error {
+	svc := rds.New(session.New())
+
+	describeDBClusterInput := &rds.DescribeDBClustersInput{
+		DBClusterIdentifier: aws.String(input.DestinationClusterIdentifier),
+	}
+	dbClusterOutput, err := svc.DescribeDBClusters(describeDBClusterInput)
+	if err != nil {
+		return fmt.Errorf("Failed to get DB Cluster: %s", err)
+	}
+	if len(dbClusterOutput.DBClusters) < 0 {
+		return fmt.Errorf("DB Cluster %s doesn't exist", input.DestinationClusterIdentifier)
+	}
+
+	cluster := dbClusterOutput.DBClusters[0]
+	db, err := sql.Open("postgres", postgresURL(cluster, input))
+	if err != nil {
+		return fmt.Errorf("Failed to connect database: %s", err)
+	}
+	defer db.Close()
+
+	_, err = db.Exec("ALTER ROLE " + input.AppUserUsername + " WITH PASSWORD '" + input.AppUserPassword + "';")
+	if err != nil {
+		return fmt.Errorf("Failed to exec a prepared statement: %s", err)
+	}
+
+	return nil
+}
+
+func postgresURL(cluster *rds.DBCluster, input *RestoreInput) string {
+	return fmt.Sprintf(
+		"postgresql://%s:%s@%s:%d/%s",
+		*cluster.MasterUsername,
+		input.MasterUserPassword,
+		*cluster.Endpoint,
+		*cluster.Port,
+		*cluster.DatabaseName,
+	)
 }
